@@ -129,5 +129,3 @@ java LibraryManagementSystem
 ## 📄 License
 
 This project is intended for educational and learning purposes.
-
-If you'd like, I can also make it look more like a **top-tier GitHub README** with badges, a project banner, screenshots section, and a polished layout similar to popular open-source repositories.

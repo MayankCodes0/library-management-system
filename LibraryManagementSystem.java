@@ -83,13 +83,12 @@ class Book {
 
 interface UtilitiesMethod {
 
-    StringBuffer sb1 = new StringBuffer();
+    StringBuffer sb1 = new StringBuffer(); // sb1 refers to dynamic string containing all avaliable books(issued & not issued both) in ArrayList list
     // method listing all books (to be overridden according to each switch case)
 
-    default String showAllBooks(List<Book> list) {
+    default void showAllBooks(List<Book> list) {
         int bookId = 101;
         // System.out.println("\nAvailable books are/is:");
-        JOptionPane.showMessageDialog(null, "Available books are/is:" + sb1);
         for (Book b1 : list) {
             // System.out.println("\nBook ID: " + bookId + "\nBook Name: " + b1.getBookName() + "\nAuthor Name: " + b1.getBookAuthorName() + "\nIssued Status: " + b1.getIssuedStatus());
             sb1.append("\nBook ID: " + bookId + "\nBook Name: " + b1.getBookName() + "\nAuthor Name: " + b1.getBookAuthorName() + "\nIssued Status: " + b1.getIssuedStatus());
@@ -100,7 +99,7 @@ interface UtilitiesMethod {
                 sb1.append("\nIssuer Name: " + b1.getBookIssuedTo() + "\nIssued On: " + b1.getBookIssuedDate());
             }
         }
-        return sb1.toString();
+        // JOptionPane.showMessageDialog(null, "Available books are/is:" + sb1);
     }
 }
 
@@ -127,6 +126,7 @@ public class LibraryManagementSystem implements UtilitiesMethod {
         // asteriskPrinter(18);
         libraryData.add(new Book("book1", "author1"));
         libraryData.add(new Book("book2", "author2"));
+        // l1.showAllBooks(libraryData);
 
         Scanner sc = new Scanner(System.in);
 
@@ -137,7 +137,7 @@ public class LibraryManagementSystem implements UtilitiesMethod {
             // System.out.print(
             //         "\nActions:\nTo add book - 1\nTo issue book - 2\nTo return book - 3\nTo see all available books - 4\nExit - 5\nEnter number to choose your action:");
             // i = sc.nextInt();
-            i = JOptionPane.showOptionDialog(null, "Welcome to Library!\nActions:", "Library Actions Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Add Book", "Issue Book", "Retrun Book", "Available Books", "Exit"}, null);
+            i = JOptionPane.showOptionDialog(null, "Welcome to Library!\nActions:", "Library Actions Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Add Book", "Issue Book", "Return Book", "Available Books", "Exit"}, null);
             int j = 1;
 
             switch (i) {
@@ -152,8 +152,8 @@ public class LibraryManagementSystem implements UtilitiesMethod {
                     libraryData.add(new Book(str1, str2));
 
                     // System.out.println("\nNew book is added successfully!");
-                    // l1.showAllBooks(libraryData);
-                    JOptionPane.showMessageDialog(null, "New book is added successfully!" + l1.showAllBooks(libraryData));
+                    l1.showAllBooks(libraryData);
+                    JOptionPane.showMessageDialog(null, "New book is added successfully!" + sb1);
                     // System.out.println();
 
                     break;
@@ -161,30 +161,41 @@ public class LibraryManagementSystem implements UtilitiesMethod {
                 case 1:
                     // System.out.println("\nFollowing are available books:");
                     StringBuffer sb2 = new StringBuffer("Following are available books:");
+                    StringBuffer sb4 = new StringBuffer("Following are available books:");
+                    l1.showAllBooks(libraryData);
+                    // System.out.println("Enter Issuer's Name: ");
+                    // String issuerName = sc.next();
+                    String issuerName = JOptionPane.showInputDialog(null, "Enter Issuer's Name: ");
 
                     for (Book b1 : libraryData) {
-                        if (b1.issuedStatus != true) {
+                        if (b1.issuedStatus == false) {
                             // System.out.println(j + "-" + "Book name:" + b1.getBookName() + " Author name:"
                             //         + b1.getBookAuthorName());
                             sb2.append("\n" + j + "-" + "Book name:" + b1.getBookName() + " Author name:" + b1.getBookAuthorName());
                             j++;
                         }
                     }
-                    // System.out.println("Enter Issuer's Name: ");
-                    // String issuerName = sc.next();
-                    String issuerName = JOptionPane.showInputDialog(null, "Enter Issuer's Name: ");
-
                     // System.out.print("Enter chronological sequence of books from following list to issue it:");
                     // int userIssueChoice = sc.nextInt();
                     int userIssueChoice = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter chronological sequence of books from following list to issue it:\n" + sb2));
 
-                    Book b3 = libraryData.get(userIssueChoice - 1);
-                    b3.issuedStatus = true;
-                    b3.setBookIssuedTo(issuerName);
+                    for (Book b1 : libraryData) {
+                        if (b1 == libraryData.get(userIssueChoice - 1)) {
+                            b1.issuedStatus = true;
+                            b1.setBookIssuedTo(issuerName);
+                        }
+                    }
+
                     // Book(issuerName, userIssueChoice);
                     // System.out.println("\nBook is issued successfully!");
-
-                    JOptionPane.showMessageDialog(null, "Book is issued successfully to " + issuerName + "!" + l1.showAllBooks(libraryData));
+                    for (Book b1 : libraryData) {
+                        if (b1.issuedStatus == false) {
+                            // System.out.println(j + "-" + "Book name:" + b1.getBookName() + " Author name:"
+                            //         + b1.getBookAuthorName());
+                            sb4.append("\nBook name:" + b1.getBookName() + " Author name:" + b1.getBookAuthorName());
+                        }
+                    }
+                    JOptionPane.showMessageDialog(null, "Book is issued successfully to " + issuerName + "!\n" + sb4);
 
                     // l1.showAllBooks(libraryData);
                     // System.out.println();
@@ -193,6 +204,8 @@ public class LibraryManagementSystem implements UtilitiesMethod {
                 case 2:
                     // System.out.print("Enter Book ID:");
                     // int returnedBookId = sc.nextInt();
+                    l1.showAllBooks(libraryData);
+
                     int returnedBookId = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter Book ID:"));
                     Book b4 = libraryData.get(returnedBookId - 101);
                     b4.setBookIssuedTo(null);
@@ -204,13 +217,13 @@ public class LibraryManagementSystem implements UtilitiesMethod {
                     // System.out.println("\nBook is returned successfully!");
                     // l1.showAllBooks(libraryData);
                     // System.out.println();
-                    JOptionPane.showMessageDialog(null, "Book is returned successfully!" + l1.showAllBooks(libraryData));
+                    JOptionPane.showMessageDialog(null, "Book is returned successfully!" + sb1);
 
                     break;
 
                 case 3:
-                    // l1.showAllBooks(libraryData);
-                    JOptionPane.showMessageDialog(null, l1.showAllBooks(libraryData));
+                    l1.showAllBooks(libraryData);
+                    JOptionPane.showMessageDialog(null, sb1);
 
                 default:
                 // System.out.println();
